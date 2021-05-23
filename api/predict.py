@@ -18,6 +18,8 @@ from core.model import ModelWrapper
 from maxfw.core import MAX_API, PredictAPI
 from flask_restplus import fields
 from werkzeug.datastructures import FileStorage
+from config import CLASS_MAP
+import pandas as pd
 
 # Set up parser for input data <http://flask-restx.readthedocs.io/en/stable/parsing.html>
 input_parser = MAX_API.parser()
@@ -27,9 +29,7 @@ input_parser.add_argument('file', type=FileStorage, location='files', required=T
 
 # Creating a JSON response model: https://flask-restx.readthedocs.io/en/stable/marshalling.html#the-api-model-factory
 label_prediction = MAX_API.model('LabelPrediction', {
-    'label_id': fields.String(required=False, description='Label identifier'),
-    'label': fields.String(required=True, description='Class label'),
-    'probability': fields.Float(required=True)
+    'prediction': fields.String(required=True, description='Label identifier')
 })
 
 predict_response = MAX_API.model('ModelPredictResponse', {
@@ -50,12 +50,14 @@ class ModelPredictAPI(PredictAPI):
         result = {'status': 'error'}
 
         args = input_parser.parse_args()
-        input_data = args['file'].read()
+        input_data = pd.read_csv(args['file'])
+        print('********')
+        print(input_data)
         preds = self.model_wrapper.predict(input_data)
 
         # Modify this code if the schema is changed
-        label_preds = [{'label_id': p[0], 'label': p[1], 'probability': p[2]} for p in [x for x in preds]]
-        result['predictions'] = label_preds
+        # label_preds = [{'label_id': p[0], 'label': p[1], 'probability': p[2]} for p in [x for x in preds]]
+        result['predictions'] = preds
         result['status'] = 'ok'
 
         return result

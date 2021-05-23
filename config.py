@@ -22,10 +22,15 @@ RESTPLUS_MASK_SWAGGER = False
 SWAGGER_UI_DOC_EXPANSION = 'none'
 
 # API metadata
-API_TITLE = 'MAX'
-API_DESC = 'An API for serving models'
+API_TITLE = 'Telecom Churn Prediction'
+API_DESC = 'Predict customer churn'
 API_VERSION = '0.1'
 
+CLASS_MAP = {
+  0: "No",
+  1: "Yes"
+}
+
 # default model
-MODEL_NAME = ''
-DEFAULT_MODEL_PATH = 'assets/{}'.format(MODEL_NAME)
+MODEL_NAME = 'classifier.pkl'
+DEFAULT_MODEL_PATH = 'files/{}'.format(MODEL_NAME)
